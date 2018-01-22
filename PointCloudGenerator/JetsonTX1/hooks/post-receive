@@ -1,0 +1,27 @@
+#!/bin/bash
+
+work_tree=/media/sd_card/OpticalGuide/
+bare_repo=/media/sd_card/OpticalGuide.git
+
+while read oldrev newrev ref
+do
+        echo "$oldrev --> $newrev      from     $ref"
+done
+
+git --work-tree=$work_tree --git-dir=$bare_repo checkout $ref -f
+
+# Move OS files into appropriate locations.
+cp -R $work_tree/PointCloudGenerator/JetsonTX1/hooks/* $bare_repo/hooks/
+sudo cp -R $work_tree/PointCloudGenerator/JetsonTX1/etc/* /etc/
+sudo cp -R $work_tree/PointCloudGenerator/JetsonTX1/lib/* /lib/
+cp $work_tree/PointCloudGenerator/JetsonTX1/clear_startup_rec_dir.sh /home/ubuntu/
+chmod +x /home/ubuntu/clear_startup_rec_dir.sh
+
+# Enable the PCG service -  this causes the pcg application to run on startup.
+sudo systemctl enable pcg.service
+
+echo "******************   Build output follows ********************"
+cd /media/sd_card/OpticalGuide/PointCloudGenerator/cpp
+mkdir -p bin
+make
+

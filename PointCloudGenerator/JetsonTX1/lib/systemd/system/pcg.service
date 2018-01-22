@@ -1,0 +1,10 @@
+# Must also run sudo systemctl enable pcg.service
+[Unit]
+Description=Job for the Point Cloud Generator application
+
+[Service]
+Type=simple
+ExecStart=/media/sd_card/OpticalGuide/PointCloudGenerator/cpp/bin/pcg /media/sd_card/OpticalGuide/PointCloudGenerator/config/pcgStartupConfig.json
+
+[Install]
+WantedBy=multi-user.target
